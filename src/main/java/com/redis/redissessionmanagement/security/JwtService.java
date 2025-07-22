@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
 import java.util.function.Function;
@@ -87,7 +88,7 @@ public class JwtService {
     public void invalidateToken(String token) {
         long expirationMillis = extractExpiration(token).getTime() - System.currentTimeMillis();
         if (expirationMillis > 0) {
-            tokenCacheService.blacklistToken(token, expirationMillis);
+            tokenCacheService.blacklistToken(token, Duration.ofMillis(expirationMillis));
         }
     }
 
