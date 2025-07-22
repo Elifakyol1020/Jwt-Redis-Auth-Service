@@ -24,10 +24,10 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    private String password;
+    private String email;
 
     @Column(nullable = false)
-    private String email;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

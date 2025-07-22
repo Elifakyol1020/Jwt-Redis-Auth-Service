@@ -14,8 +14,8 @@ public class TokenCacheService {
         this.redisTemplate = redisTemplate;
     }
 
-    public void blacklistToken(String token, long expirationMillis) {
-        redisTemplate.opsForValue().set(token, "blacklisted", Duration.ofMillis(expirationMillis));
+    public void blacklistToken(String token, Duration expiration) {
+        redisTemplate.opsForValue().set(token, "blacklisted", expiration);
     }
 
     public boolean isTokenBlacklisted(String token) {
