@@ -62,6 +62,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (TokenExpiredException | UnauthorizedException ex) {
             SecurityContextHolder.clearContext();
+            logger.error("Authentication failed: {}", ex.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Authentication failed: " + ex.getMessage());
+            response.getWriter().flush();
             return;
         }
         filterChain.doFilter(request, response);
