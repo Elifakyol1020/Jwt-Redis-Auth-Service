@@ -31,6 +31,9 @@ public class JwtService {
     }
 
     public String generateToken(String email, Role role) {
+        if (role == null) {
+            throw new IllegalArgumentException("Role null olamaz");
+        }
         SecretKey key = getSignKey();
         return Jwts.builder()
                 .setSubject(email)
@@ -88,7 +91,7 @@ public class JwtService {
     public void invalidateToken(String token) {
         long expirationMillis = extractExpiration(token).getTime() - System.currentTimeMillis();
         if (expirationMillis > 0) {
-            tokenCacheService.blacklistToken(token, Duration.ofMillis(expirationMillis));
+            tokenCacheService.blacklistToken(token, extractExpiration(token));
         }
     }
 

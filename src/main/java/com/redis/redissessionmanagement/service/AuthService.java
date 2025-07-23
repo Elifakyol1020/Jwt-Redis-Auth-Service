@@ -11,5 +11,5 @@ public interface AuthService {
 
     ResponseEntity<AuthResponse> login(AuthRequest request);
 
-    ResponseEntity<String> logout(String token);
+    void logout();
 }
