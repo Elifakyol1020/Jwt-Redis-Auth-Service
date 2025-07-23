@@ -2,7 +2,6 @@ package com.redis.redissessionmanagement.security;
 
 import com.redis.redissessionmanagement.exception.TokenExpiredException;
 import com.redis.redissessionmanagement.exception.UnauthorizedException;
-import com.redis.redissessionmanagement.service.TokenCacheService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +30,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
-        final String token;
         final String username;
         final String role;
 
@@ -40,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        token = authHeader.substring(7);
+        final String token = authHeader.substring(7);
 
         try {
             jwtService.validateToken(token);
@@ -62,9 +60,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         } catch (TokenExpiredException | UnauthorizedException ex) {
             SecurityContextHolder.clearContext();
-            logger.error("Authentication failed: {}", ex.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Authentication failed: " + ex.getMessage());
+            response.getWriter().flush();
+            return;
+        } catch (Exception e) {
+            SecurityContextHolder.clearContext();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Authentication failed: " + e.getMessage());
             response.getWriter().flush();
             return;
         }

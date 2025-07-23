@@ -3,9 +3,8 @@ package com.redis.redissessionmanagement.controller;
 import com.redis.redissessionmanagement.dto.request.AuthRequest;
 import com.redis.redissessionmanagement.dto.request.RegisterRequest;
 import com.redis.redissessionmanagement.dto.response.AuthResponse;
-import com.redis.redissessionmanagement.exception.InvalidAuthorizationHeaderException;
 import com.redis.redissessionmanagement.service.AuthService;
-import jakarta.servlet.http.HttpServletRequest;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,11 +27,10 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authHeader) {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new InvalidAuthorizationHeaderException("Geçersiz Authorization header");
-        }
-        String token = authHeader.substring(7);
-        return authService.logout(token);
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<String> logout() {
+        authService.logout();
+        return ResponseEntity.ok("Başarıyla çıkış yapıldı");
     }
+
 }
